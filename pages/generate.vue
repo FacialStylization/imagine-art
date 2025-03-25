@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-[1024px] bg-gradient-to-b from-[#E6F7F5] to-white font-['Microsoft YaHei']">
     <Navbar />
-    <div class="max-w-[1440px] mx-auto px-8 py-4 pt-28">
+    <div class="max-w-[1440px] mx-auto px-8 py-4">
       <div class="mb-4 flex justify-between items-center">
         <div class="bg-white rounded-full p-1 inline-flex">
           <div class="flex">
@@ -41,32 +41,58 @@
         <div class="w-[400px]">
           <div class="content-area p-6 mb-6">
             <h2 class="text-xl font-bold mb-4">手绘创作</h2>
-            <div class="bg-gray-50 rounded-xl h-[300px] flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group">
-              <div class="text-center">
+            <div class="bg-gray-50 rounded-xl h-[340px] flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative " @click="triggerFileInput">
+              <input
+                  ref="fileInput"
+                  type="file"
+                  class="hidden"
+                  accept="image/*" 
+                  @change="handleFileChange"
+                >
+              <div class="text-center" v-if="!previewUrl">
                 <font-awesome-icon :icon="['fas', 'upload']" class="text-4xl text-gray-400 mb-4 group-hover:text-primary transition-all" />
-                <p class="text-gray-500 group-hover:text-primary transition-all">点击或拖拽上传你的手绘作品</p>
+                <p class="text-gray-500 group-hover:text-primary transition-all">点击上传你的手绘作品</p>
                 <p class="text-xs text-gray-400 mt-2">支持 JPG、PNG、SVG 格式</p>
               </div>
+              <img 
+                v-if="previewUrl" 
+                :src="previewUrl" 
+                class="absolute inset-0 w-full h-full object-cover rounded-xl object-center"
+                @click.stop="triggerFileInput"
+              >
             </div>
           </div>
-          <div class="content-area p-6">
+          <div class="content-area pl-6 pr-6 pt-6 pb-6">
             <h2 class="text-xl font-bold mb-4">风格参考</h2>
             <div class="grid grid-cols-2 gap-4">
-              <div class="bg-gray-50 rounded-xl h-[200px] flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group">
-                <div class="text-center">
+              <div class="bg-gray-50 rounded-xl h-[200px] flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative"  @click="triggerStyleFileInput">
+                  <input
+                    ref="styleFileInput"
+                    type="file"
+                    class="hidden"
+                    accept="image/*"
+                    @change="handleStyleFileChange"
+                  >
+                <div class="text-center" v-if="!stylePreviewUrl">
                   <font-awesome-icon :icon="['fas', 'upload']" class="text-4xl text-gray-400 mb-4 group-hover:text-primary transition-all" />
                   <p class="text-gray-500 group-hover:text-primary transition-all">上传风格图片</p>
                   <p class="text-xs text-gray-400 mt-2">推荐尺寸 1024×1024</p>
                 </div>
+                <img 
+                  v-if="stylePreviewUrl" 
+                  :src="stylePreviewUrl" 
+                  class="absolute inset-0 w-full h-full object-cover rounded-xl object-center"
+                  @click.stop="triggerStyleFileInput"
+                >
               </div>
-              <div class="bg-gray-50 rounded-xl h-[200px] p-4">
+              <div class="bg-gray-50 rounded-xl h-[200px] flex flex-col">
                 <h3 class="text-lg font-medium mb-2">系统风格</h3>
-                <div class="grid grid-cols-3 gap-2">
-                  <div v-for="(style, index) in styles" :key="index" class="cursor-pointer hover:opacity-80">
+                <div class="flex-1  overflow-hidden">
+                  <div class="cursor-pointer hover:opacity-80 w-full h-full">
                     <img
-                      :src="style.url"
-                      :alt="style.alt"
-                      class="rounded-lg w-[80px] h-[80px] object-cover"
+                      :src="styles[2].url"
+                      :alt="styles[0].alt"
+                      class="rounded-lg object-cover w-full h-full"
                     >
                   </div>
                 </div>
@@ -96,10 +122,10 @@
             </button>
           </div>
         </div>
-        <div class="w-[300px]">
+        <div class="w-[300px] max-h-[750px]">
           <div class="content-area p-6">
             <h2 class="text-xl font-bold mb-4">创作历史</h2>
-            <div class="space-y-4">
+            <div class="space-y-4 overflow-y-auto max-h-[700px] scrollbar">
               <div v-for="(history, index) in historyList" :key="index" class="bg-gray-50 rounded-xl p-4">
                 <img
                   :src="history.imageUrl"
@@ -153,6 +179,68 @@ const historyList = ref([
     date: '2024-01-18 09:15'
   }
 ]);
+//上传手绘
+const fileInput = ref<HTMLInputElement | null>(null);
+//存储原始文件对象
+const previewFile = ref<File | null>(null); 
+// 预览图片的URL
+const previewUrl = ref<string | null>(null); 
+
+// 触发文件选择
+const triggerFileInput = () => {
+  fileInput.value?.click();
+};
+
+// 处理文件选择
+const handleFileChange = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (file) {
+    // 验证是否为图片
+    if (!file.type.startsWith('image/')) {
+      alert('请选择图片文件');
+      return;
+    }
+    previewFile.value = file
+    // 生成预览URL
+    previewUrl.value = URL.createObjectURL(file);
+    // console.log(previewFile.value)
+    // 这里可以添加实际的上传逻辑
+    // uploadToServer(file);
+  }
+
+  // 清空input值，允许重复选择同一文件
+  target.value = '';
+};
+//上传风格图片
+const styleFileInput = ref<HTMLInputElement | null>(null);
+const stylePreviewFile = ref<File | null>(null);
+const stylePreviewUrl = ref<string | null>(null);
+
+// 触发风格图片文件选择
+const triggerStyleFileInput = () => {
+  styleFileInput.value?.click();
+};
+
+// 处理风格图片文件选择
+const handleStyleFileChange = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (file) {
+    if (!file.type.startsWith('image/')) {
+      alert('请选择图片文件');
+      return;
+    }
+    stylePreviewFile.value = file;
+    stylePreviewUrl.value = URL.createObjectURL(file);
+    // 这里可以添加实际上传逻辑
+    
+  }
+  
+  target.value = '';
+};
 </script>
 
 <style scoped>
