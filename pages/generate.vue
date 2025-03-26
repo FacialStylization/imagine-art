@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-[1024px] bg-gradient-to-b from-[#E6F7F5] to-white font-['Microsoft YaHei']">
     <Navbar />
-    <div class="max-w-[1440px] mx-auto px-8 py-4">
+    <div class="max-w-[1440px] mx-auto px-8">
       <div class="mb-4 flex justify-between items-center">
         <div class="bg-white rounded-full p-1 inline-flex">
           <div class="flex">
