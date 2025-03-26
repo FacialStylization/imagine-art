@@ -38,10 +38,10 @@
         </div>
       </div>
       <div class="flex gap-6">
-        <div class="w-[400px]">
-          <div class="content-area p-6 mb-6">
-            <h2 class="text-xl font-bold mb-4">手绘创作</h2>
-            <div class="bg-gray-50 rounded-xl h-[340px] flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative " @click="triggerFileInput">
+        <div class="w-[330px]">
+          <div class="content-area p-4 mb-4">
+            <h2 class="text-xl font-bold mb-2">手绘创作</h2>
+            <div class="bg-gray-50 rounded-xl h-[300px] flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative " @click="triggerFileInput">
               <input
                   ref="fileInput"
                   type="file"
@@ -62,10 +62,30 @@
               >
             </div>
           </div>
-          <div class="content-area pl-6 pr-6 pt-6 pb-6">
+          <div class="content-area p-4 relative" >
+            <!-- 导航栏 -->
+            <div class="absolute left-[-130px] top-0 w-[120px] h-full  border-r border-gray-200 content-area">
+              <div class="p-2">
+                <h2 class="text-lg font-bold mb-2 mt-1 text-center">系统风格</h2>
+                <div class="space-y-3">
+                  <div 
+                    v-for="(style, index) in styles" :key="index"
+                    class="bg-gray-50 rounded-lg py-2  px-4 hover:bg-gray-100 transition-colors"
+                  >
+                  <img
+                    :src="style.url"
+                    :alt="style.alt"
+                    class="rounded-lg w-[80px] h-[80px] object-cover"
+                    style="cursor: pointer"
+                    @click="selectStyle(style)"
+                  >
+                  </div>
+                </div>
+              </div>
+            </div>
             <h2 class="text-xl font-bold mb-4">风格参考</h2>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-gray-50 rounded-xl h-[200px] flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative"  @click="triggerStyleFileInput">
+            <div class="grid grid-cols-1 gap-4">
+              <div class="bg-gray-50 rounded-xl h-[300px] flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative"  @click="triggerStyleFileInput">
                   <input
                     ref="styleFileInput"
                     type="file"
@@ -84,18 +104,6 @@
                   class="absolute inset-0 w-full h-full object-cover rounded-xl object-center"
                   @click.stop="triggerStyleFileInput"
                 >
-              </div>
-              <div class="bg-gray-50 rounded-xl h-[200px] flex flex-col">
-                <h3 class="text-lg font-medium mb-2">系统风格</h3>
-                <div class="flex-1  overflow-hidden">
-                  <div class="cursor-pointer hover:opacity-80 w-full h-full">
-                    <img
-                      :src="styles[2].url"
-                      :alt="styles[0].alt"
-                      class="rounded-lg object-cover w-full h-full"
-                    >
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -122,7 +130,7 @@
             </button>
           </div>
         </div>
-        <div class="w-[300px] max-h-[750px]">
+        <div class="w-[250px] max-h-[750px]">
           <div class="content-area p-6">
             <h2 class="text-xl font-bold mb-4">创作历史</h2>
             <div class="space-y-4 overflow-y-auto max-h-[700px] scrollbar">
@@ -236,10 +244,31 @@ const handleStyleFileChange = (e: Event) => {
     stylePreviewFile.value = file;
     stylePreviewUrl.value = URL.createObjectURL(file);
     // 这里可以添加实际上传逻辑
-    
+    console.log(stylePreviewFile.value); 
   }
   
   target.value = '';
+};
+
+//系统风格图片
+const selectStyle = async (style: { url: string, alt: string }) => {
+  try {
+    // 获取图片数据
+    const response = await fetch(style.url);
+    const blob = await response.blob();
+    
+    // 创建真实 File 对象
+    stylePreviewFile.value = new File([blob], style.alt, {
+      type: blob.type || 'image/*',
+      lastModified: Date.now()
+    });
+    console.log(stylePreviewFile.value);
+    
+    // 生成预览URL
+    stylePreviewUrl.value = URL.createObjectURL(blob);
+  } catch (error) {
+    console.error('图片加载失败:', error);
+  }
 };
 </script>
 
