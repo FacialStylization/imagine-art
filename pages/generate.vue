@@ -244,7 +244,6 @@ const handleStyleFileChange = (e: Event) => {
     stylePreviewFile.value = file;
     stylePreviewUrl.value = URL.createObjectURL(file);
     // 这里可以添加实际上传逻辑
-    console.log(stylePreviewFile.value); 
   }
   
   target.value = '';
@@ -262,7 +261,6 @@ const selectStyle = async (style: { url: string, alt: string }) => {
       type: blob.type || 'image/*',
       lastModified: Date.now()
     });
-    console.log(stylePreviewFile.value);
     
     // 生成预览URL
     stylePreviewUrl.value = URL.createObjectURL(blob);

@@ -1,6 +1,6 @@
 <template>
   <header class="w-full bg-transparent z-50">
-    <div class="max-w-[1440px] mx-auto px-8  flex justify-between items-center">
+    <div class="max-w-[1440px] mx-auto px-8 flex justify-between items-center">
       <NuxtLink to="/" class="font-['Pacifico'] text-4xl text-primary hover:opacity-80 transition-all">
         <img src="/images/logo.png" alt="Logo" class="w-16 h-16 mr-2 inline-block" />
       </NuxtLink>
