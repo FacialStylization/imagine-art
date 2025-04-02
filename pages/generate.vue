@@ -110,21 +110,24 @@
         </div>
         <div class="flex-1 content-area p-6">
           <h2 class="text-xl font-bold mb-4">AI 创作结果</h2>
-          <div class="bg-gray-50 rounded-xl h-[600px] flex items-center justify-center">
+          <div class="bg-gray-50 rounded-xl h-[600px] flex items-center justify-center border-2 border-dashed border-gray-300 relative" v-loading="isLoading">
             <img
               v-if="aiResult"
               :src="aiResult"
               alt="AI创作结果"
               class="max-h-full rounded-xl"
             >
-            <p v-else class="text-gray-400">生成的艺术作品将显示在这里</p>
+            <div v-else class="text-center gentext">
+              <font-awesome-icon :icon="['fas', 'image']" class="text-6xl text-gray-400 mb- group-hover:text-primary transition-all mb-2" />
+               <p class="text-gray-400">生成的艺术作品将显示在这里</p>
+            </div>
           </div>
           <div class="mt-4 flex justify-end gap-4">
             <button class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-gray-200 transition-all shadow-sm hover:shadow !rounded-button whitespace-nowrap">
               <font-awesome-icon :icon="['fas', 'download']" />
               <span>下载作品</span>
             </button>
-            <button class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg !rounded-button whitespace-nowrap">
+            <button  @click="generateArtwork" class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg !rounded-button whitespace-nowrap">
               <font-awesome-icon :icon="['fas', 'wand-magic-sparkles']" />
               <span>开始创作</span>
             </button>
@@ -153,9 +156,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Navbar from '~/components/layout/Navbar.vue';
+import request from '~/api/generate';
+import { vLoading } from '@/directives/loading'
+import { set } from '~/node_modules/nuxt/dist/app/compat/capi';
 
 const activeTab = ref('image');
-
 const styles = ref([
   {
     url: '/images/examples/example1.png',
@@ -171,7 +176,8 @@ const styles = ref([
   }
 ]);
 
-const aiResult = ref('/images/examples/example4.png');
+// const aiResult = ref('/images/examples/example4.png');
+const aiResult = ref<string | null>(null)
 
 const historyList = ref([
   {
@@ -268,6 +274,51 @@ const selectStyle = async (style: { url: string, alt: string }) => {
     console.error('图片加载失败:', error);
   }
 };
+
+//生成艺术作品
+//加载状态
+const isLoading = ref(false)
+const timer = ref<number | null>(null)
+const generateArtwork = async () => {
+  if (!previewUrl.value || !stylePreviewUrl.value) {
+    alert('请先上传手绘作品和风格参考图片');
+    return;
+  }
+  if (isLoading.value) return
+  try {
+    isLoading.value = true
+    // // 准备 FormData（适合文件上传）
+    // const formData = new FormData();
+    // formData.append('contentImage', previewFile.value!);  // 手绘图片文件
+    // formData.append('styleImage', stylePreviewFile.value!); // 风格图片文件
+
+    // // 发送请求
+    // const response = await request.post('YOUR_API_URL', formData, {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data'  // 重要：文件上传必须用 multipart
+    //   }
+    // });
+
+    // // 处理响应结果（假设返回的AI结果URL在 response.data.result）
+    // aiResult.value = response.data.result;
+
+    // 试验axios
+    console.log(previewUrl.value, stylePreviewUrl.value);
+    await new Promise((reject)=>setTimeout(reject, 5000))
+    const res = await request({
+        url:'http://smart-shop.itheima.net/index.php?s=/api/captcha/image'
+      })      
+    console.log(res)
+
+
+  } catch (error) {
+    console.error('生成失败:', error);
+    alert('生成失败，请重试');
+  } finally{
+    isLoading.value = false
+  }
+};
+
 </script>
 
 <style scoped>
@@ -294,5 +345,21 @@ button:hover :deep(.fas) {
 /* 添加按钮悬停效果 */
 button:not([style*="background-color"]):hover {
   background-color: #f3f4f6;
+}
+.gentext {
+  font-size: 1.2rem;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.loading:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff url('/images/loading.gif') no-repeat center;
 }
 </style>
