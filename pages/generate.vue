@@ -290,17 +290,14 @@ const generateArtwork = async () => {
     // const formData = new FormData();
     // formData.append('contentImage', previewFile.value!);  // 手绘图片文件
     // formData.append('styleImage', stylePreviewFile.value!); // 风格图片文件
-
     // // 发送请求
     // const response = await request.post('YOUR_API_URL', formData, {
     //   headers: {
     //     'Content-Type': 'multipart/form-data'  // 重要：文件上传必须用 multipart
     //   }
     // });
-
     // // 处理响应结果（假设返回的AI结果URL在 response.data.result）
     // aiResult.value = response.data.result;
-
     // 试验axios
     console.log(previewUrl.value, stylePreviewUrl.value);
     await new Promise((reject)=>setTimeout(reject, 5000))
