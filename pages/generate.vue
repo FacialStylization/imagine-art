@@ -156,10 +156,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Navbar from '~/components/layout/Navbar.vue';
-import request from '~/api/generate';
+import {request} from '@/api/generate'
 import { vLoading } from '@/directives/loading'
 import { set } from '~/node_modules/nuxt/dist/app/compat/capi';
-
 const activeTab = ref('image');
 const styles = ref([
   {
@@ -309,12 +308,12 @@ const generateArtwork = async () => {
         url:'http://smart-shop.itheima.net/index.php?s=/api/captcha/image'
       })      
     console.log(res)
-
-
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('生成失败:', error);
     alert('生成失败，请重试');
-  } finally{
+  } 
+  finally{
     isLoading.value = false
   }
 };

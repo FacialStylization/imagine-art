@@ -48,10 +48,8 @@
   top: 0;
   width: 100%;
   height: 100%;
-  /* background-image: url('/images/teaser.png'); */
   background-image: linear-gradient(to bottom,rgba(255, 255, 255, 0.1),rgba(0,0,0,0.1)),url('/images/teaser.png');
   background-size: cover;
   background-position: center;
-  /* opacity: 0.9; */
 }
 </style>
