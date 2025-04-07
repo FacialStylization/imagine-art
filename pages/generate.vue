@@ -277,7 +277,6 @@ const selectStyle = async (style: { url: string, alt: string }) => {
 //生成艺术作品
 //加载状态
 const isLoading = ref(false)
-const timer = ref<number | null>(null)
 const generateArtwork = async () => {
   if (!previewUrl.value || !stylePreviewUrl.value) {
     alert('请先上传手绘作品和风格参考图片');
@@ -286,25 +285,25 @@ const generateArtwork = async () => {
   if (isLoading.value) return
   try {
     isLoading.value = true
-    // // 准备 FormData（适合文件上传）
-    // const formData = new FormData();
-    // formData.append('contentImage', previewFile.value!);  // 手绘图片文件
-    // formData.append('styleImage', stylePreviewFile.value!); // 风格图片文件
-    // // 发送请求
-    // const response = await request.post('YOUR_API_URL', formData, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'  // 重要：文件上传必须用 multipart
-    //   }
-    // });
-    // // 处理响应结果（假设返回的AI结果URL在 response.data.result）
-    // aiResult.value = response.data.result;
-    // 试验axios
-    console.log(previewUrl.value, stylePreviewUrl.value);
-    await new Promise((reject)=>setTimeout(reject, 5000))
-    const res = await request({
-        url:'http://smart-shop.itheima.net/index.php?s=/api/captcha/image'
-      })      
-    console.log(res)
+    // 准备 FormData（适合文件上传）
+    const formData = new FormData();
+    console.log(previewFile.value,stylePreviewFile.value);
+    formData.append('content', previewFile.value!);  // 手绘图片文件
+    formData.append('style', stylePreviewFile.value!); // 风格图片文件
+    // 发送请求
+    const response = await request.post('http://192.168.3.104:3000/api/ipadapter_scribble', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'  // 重要：文件上传必须用 multipart
+      }
+    });
+    // 处理响应结果（假设返回的AI结果URL在 response.data.result）
+    console.log(JSON.stringify(response.data))
+    const blob = new Blob([response.data], { type: response.headers['content-type'] || 'image/png' });
+    console.log('Blob size:', blob.size);
+    console.log('Blob type:', blob.type);
+    const blobUrl = URL.createObjectURL(blob)
+    console.log(blobUrl);
+    // aiResult.value = JSON.stringify(response.data) ;
   } 
   catch (error) {
     console.error('生成失败:', error);
