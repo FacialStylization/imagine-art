@@ -7,7 +7,7 @@ import type {
 } from 'axios';
 // 创建并导出 instance（统一在开头导出）
 export const request: AxiosInstance = axios.create({
-  timeout: 3000,
+  timeout: 300000,
 });
 
 // 请求拦截器

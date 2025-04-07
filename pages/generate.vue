@@ -156,9 +156,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Navbar from '~/components/layout/Navbar.vue';
-import {request} from '@/api/generate'
-import { vLoading } from '@/directives/loading'
-import { set } from '~/node_modules/nuxt/dist/app/compat/capi';
+import { request } from '~/api/generate'
+import { vLoading } from '~/directives/loading'
 const activeTab = ref('image');
 const styles = ref([
   {
@@ -283,35 +282,40 @@ const generateArtwork = async () => {
     alert('请先上传手绘作品和风格参考图片');
     return;
   }
-  if (isLoading.value) return
+  if (isLoading.value) return;
   try {
-    isLoading.value = true
-    // // 准备 FormData（适合文件上传）
-    // const formData = new FormData();
-    // formData.append('contentImage', previewFile.value!);  // 手绘图片文件
-    // formData.append('styleImage', stylePreviewFile.value!); // 风格图片文件
-    // // 发送请求
-    // const response = await request.post('YOUR_API_URL', formData, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'  // 重要：文件上传必须用 multipart
-    //   }
-    // });
-    // // 处理响应结果（假设返回的AI结果URL在 response.data.result）
-    // aiResult.value = response.data.result;
-    // 试验axios
-    console.log(previewUrl.value, stylePreviewUrl.value);
-    await new Promise((reject)=>setTimeout(reject, 5000))
-    const res = await request({
-        url:'http://smart-shop.itheima.net/index.php?s=/api/captcha/image'
-      })      
-    console.log(res)
-  } 
-  catch (error) {
+    isLoading.value = true;
+    const formData = new FormData();
+    console.log(previewFile.value,stylePreviewFile.value);
+    formData.append('content', previewFile.value!);
+    formData.append('style', stylePreviewFile.value!);
+    const response = await request.post('https://blood-florists-different-symbol.trycloudflare.com/api/ipadapter_scribble', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      responseType: 'arraybuffer'
+    });
+    
+    // 处理响应结果
+    const blob = new Blob([response.data], { type: 'image/png' });
+    console.log('Blob size:', blob.size);
+    console.log('Blob type:', blob.type);
+    const blobUrl = URL.createObjectURL(blob);
+    console.log(blobUrl);
+    
+    // 设置结果图片
+    aiResult.value = blobUrl;
+    
+    // 添加到历史记录
+    historyList.value.unshift({
+      imageUrl: blobUrl,
+      date: new Date().toLocaleString('zh-CN')
+    });
+  } catch (error) {
     console.error('生成失败:', error);
     alert('生成失败，请重试');
-  } 
-  finally{
-    isLoading.value = false
+  } finally{
+    isLoading.value = false;
   }
 };
 
