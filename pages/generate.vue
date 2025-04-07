@@ -277,6 +277,7 @@ const selectStyle = async (style: { url: string, alt: string }) => {
 //生成艺术作品
 //加载状态
 const isLoading = ref(false)
+const timer = ref<number | null>(null)
 const generateArtwork = async () => {
   if (!previewUrl.value || !stylePreviewUrl.value) {
     alert('请先上传手绘作品和风格参考图片');
