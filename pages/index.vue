@@ -31,7 +31,7 @@
             class="rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl hover:-translate-y-1"
           >
             <img
-              src="/images/examples/example1.png"
+              src="/images/results/starry_night_house.png"
               alt="可爱兔子"
               class="w-full h-[300px] object-cover"
             />
@@ -40,7 +40,7 @@
             class="rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl hover:-translate-y-1"
           >
             <img
-              src="/images/examples/example2.png"
+              src="/images/results/impression_sunrise_house.png"
               alt="魔法森林"
               class="w-full h-[300px] object-cover"
             />
@@ -49,7 +49,7 @@
             class="rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl hover:-translate-y-1"
           >
             <img
-              src="/images/examples/example3.png"
+              src="/images/results/crayon_sea.png"
               alt="太空火箭"
               class="w-full h-[300px] object-cover"
             />
