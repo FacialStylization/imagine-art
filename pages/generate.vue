@@ -88,8 +88,8 @@
                 >
               </div>
               
-              <h2 class="text-lg font-bold mb-2 mt-2 text-left">系统风格</h2>
-              <div class="flex flex-wrap gap-2">
+              <h2 class="text-lg font-bold mt-2 text-left">系统风格</h2>
+              <div class="flex flex-wrap gap-10">
                 <img
                   v-for="(style, index) in styles" :key="index"
                   :src="style.url"
@@ -109,15 +109,15 @@
               v-if="aiResult"
               :src="aiResult"
               alt="AI创作结果"
-              class="max-w-[95%] max-h-[95%] rounded-xl object-contain"
+              class="absolute w-full h-full rounded-xl object-cover"
             >
             <div v-else class="text-center gentext">
               <font-awesome-icon :icon="['fas', 'image']" class="text-6xl text-gray-400 mb-2 group-hover:text-primary transition-all" />
               <p class="text-gray-400">生成的艺术作品将显示在这里</p>
             </div>
           </div>
-          <div class="mt-4 flex justify-end gap-4">
-            <button class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-gray-200 transition-all shadow-sm hover:shadow !rounded-button whitespace-nowrap">
+          <div class="mt-14 flex justify-end gap-4">
+            <button @click="downloadImage" class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-gray-200 transition-all shadow-sm hover:shadow !rounded-button whitespace-nowrap">
               <font-awesome-icon :icon="['fas', 'download']" />
               <span>下载作品</span>
             </button>
@@ -128,10 +128,10 @@
           </div>
         </div>
         
-        <div class="w-[250px]">
-          <div class="content-area p-6 flex flex-col h-full">
+        <div class="w-[250px] max-h-[902px]">
+          <div class="content-area p-6">
             <h2 class="text-xl font-bold mb-4">创作历史</h2>
-            <div class="space-y-4 overflow-y-auto flex-1">
+            <div class="space-y-4 overflow-y-auto max-h-[810px] scrollbar">
               <div v-for="(history, index) in historyList" :key="index" class="bg-gray-50 rounded-xl p-4">
                 <img
                   :src="history.imageUrl"
@@ -149,11 +149,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import Navbar from '~/components/layout/Navbar.vue';
+import { ref } from 'vue'
+import Navbar from '~/components/layout/Navbar.vue'
 import { request } from '~/api/generate'
 import { vLoading } from '~/directives/loading'
-const activeTab = ref('image');
+const activeTab = ref('image')
 const styles = ref([
   {
     url: '/images/examples/example1.png',
@@ -284,10 +284,9 @@ const generateArtwork = async () => {
   try {
     isLoading.value = true;
     const formData = new FormData();
-    console.log(previewFile.value,stylePreviewFile.value);
     formData.append('content', previewFile.value!);
     formData.append('style', stylePreviewFile.value!);
-    const response = await request.post('https://blood-florists-different-symbol.trycloudflare.com/api/ipadapter_scribble', formData, {
+    const response = await request.post('https://shirt-round-aluminium-cable.trycloudflare.com/api/ipadapter_scribble', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -296,10 +295,7 @@ const generateArtwork = async () => {
     
     // 处理响应结果
     const blob = new Blob([response.data], { type: 'image/png' });
-    console.log('Blob size:', blob.size);
-    console.log('Blob type:', blob.type);
     const blobUrl = URL.createObjectURL(blob);
-    console.log(blobUrl);
     
     // 设置结果图片
     aiResult.value = blobUrl;
@@ -310,13 +306,28 @@ const generateArtwork = async () => {
       date: new Date().toLocaleString('zh-CN')
     });
   } catch (error) {
-    console.error('生成失败:', error);
-    alert('生成失败，请重试');
+    console.error('生成失败:', error)
+    alert('生成失败，请重试')
   } finally{
-    isLoading.value = false;
+    isLoading.value = false
   }
 };
 
+//下载图片
+// 在setup()或<script setup>中添加：
+const downloadImage = () => {
+  if (!aiResult.value) return;
+  // 如果是Blob URL（blob:http://...）
+  if (aiResult.value.startsWith('blob:')) {
+    const link = document.createElement('a')
+    link.href = aiResult.value
+    link.download = `智绘创艺.png`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    return
+  }
+}
 </script>
 
 <style scoped>
