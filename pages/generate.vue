@@ -131,7 +131,7 @@
         <div class="w-[250px]">
           <div class="content-area p-6 flex flex-col h-full">
             <h2 class="text-xl font-bold mb-4">创作历史</h2>
-            <div class="space-y-4 overflow-y-auto flex-1 scrollbar">
+            <div class="space-y-4 overflow-y-auto flex-1">
               <div v-for="(history, index) in historyList" :key="index" class="bg-gray-50 rounded-xl p-4">
                 <img
                   :src="history.imageUrl"
@@ -359,34 +359,5 @@ button:not([style*="background-color"]):hover {
   width: 100%;
   height: 100%;
   background: #fff url('/images/loading.gif') no-repeat center;
-}
-
-/* 隐藏除创作历史外的滚动条 */
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari, Opera */
-}
-
-/* 定制创作历史滚动条 */
-.scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.scrollbar::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 10px;
-}
-
-.scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
 }
 </style>
