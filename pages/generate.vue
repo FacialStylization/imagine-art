@@ -37,8 +37,8 @@
           </button>
         </div>
       </div>
-      <div class="flex gap-6">
-        <!-- 左侧栏 -->
+
+      <div class="flex gap-6 items-stretch">
         <div class="w-[330px] flex flex-col">
           <div class="content-area p-4 mb-4">
             <h2 class="text-xl font-bold mb-2">手绘创作</h2>
@@ -63,17 +63,18 @@
               >
             </div>
           </div>
+          
           <div class="content-area p-4 flex-1">
             <h2 class="text-xl font-bold mb-4">风格参考</h2>
             <div class="grid grid-cols-1 gap-4">
               <div class="bg-gray-50 rounded-xl w-full aspect-square flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative"  @click="triggerStyleFileInput">
-                  <input
-                    ref="styleFileInput"
-                    type="file"
-                    class="hidden"
-                    accept="image/*"
-                    @change="handleStyleFileChange"
-                  >
+                <input
+                  ref="styleFileInput"
+                  type="file"
+                  class="hidden"
+                  accept="image/*"
+                  @change="handleStyleFileChange"
+                >
                 <div class="text-center" v-if="!stylePreviewUrl">
                   <font-awesome-icon :icon="['fas', 'upload']" class="text-4xl text-gray-400 mb-4 group-hover:text-primary transition-all" />
                   <p class="text-gray-500 group-hover:text-primary transition-all">上传风格图片</p>
@@ -86,6 +87,7 @@
                   @click.stop="triggerStyleFileInput"
                 >
               </div>
+              
               <h2 class="text-lg font-bold mb-2 mt-2 text-left">系统风格</h2>
               <div class="flex flex-wrap gap-2">
                 <img
@@ -100,7 +102,6 @@
           </div>
         </div>
         
-        <!-- 中间AI创作结果区域 -->
         <div class="flex-1 content-area p-6 flex flex-col">
           <h2 class="text-xl font-bold mb-4">AI 创作结果</h2>
           <div class="bg-gray-50 rounded-xl flex-1 flex items-center justify-center border-2 border-dashed border-gray-300 relative" v-loading="isLoading">
@@ -112,7 +113,7 @@
             >
             <div v-else class="text-center gentext">
               <font-awesome-icon :icon="['fas', 'image']" class="text-6xl text-gray-400 mb-2 group-hover:text-primary transition-all" />
-               <p class="text-gray-400">生成的艺术作品将显示在这里</p>
+              <p class="text-gray-400">生成的艺术作品将显示在这里</p>
             </div>
           </div>
           <div class="mt-4 flex justify-end gap-4">
@@ -127,7 +128,6 @@
           </div>
         </div>
         
-        <!-- 右侧创作历史区域 -->
         <div class="w-[250px]">
           <div class="content-area p-6 flex flex-col h-full">
             <h2 class="text-xl font-bold mb-4">创作历史</h2>
@@ -169,7 +169,6 @@ const styles = ref([
   }
 ]);
 
-// const aiResult = ref('/images/examples/example4.png');
 const aiResult = ref<string | null>(null)
 
 const historyList = ref([
