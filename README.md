@@ -48,21 +48,25 @@ npm run dev
 ### 使用Vercel部署
 
 1. 确保已安装[Vercel CLI](https://vercel.com/docs/cli)：
+
    ```bash
    npm install -g vercel
    ```
 
 2. 登录Vercel账户：
+
    ```bash
    vercel login
    ```
 
 3. 部署项目：
+
    ```bash
    vercel
    ```
 
 4. 配置GitHub Actions自动部署：
+
    - 在GitHub仓库的`Settings > Secrets and variables > Actions`中添加以下Secrets：
      - `VERCEL_TOKEN`：从Vercel账户获取的API Token
      - `VERCEL_ORG_ID`：Vercel组织ID
