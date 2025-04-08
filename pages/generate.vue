@@ -89,7 +89,7 @@
               </div>
               
               <h2 class="text-lg font-bold mt-2 text-left">系统风格</h2>
-              <div class="flex flex-wrap gap-10">
+              <div class="flex flex-wrap gap-2">
                 <img
                   v-for="(style, index) in styles" :key="index"
                   :src="style.url"
@@ -128,10 +128,10 @@
           </div>
         </div>
         
-        <div class="w-[250px] max-h-[902px]">
+        <div class="w-[250px]">
           <div class="content-area p-6">
             <h2 class="text-xl font-bold mb-4">创作历史</h2>
-            <div class="space-y-4 overflow-y-auto max-h-[810px] scrollbar">
+            <div class="space-y-4 overflow-y-auto scrollbar">
               <div v-for="(history, index) in historyList" :key="index" class="bg-gray-50 rounded-xl p-4">
                 <img
                   :src="history.imageUrl"
@@ -153,6 +153,7 @@ import { ref } from 'vue'
 import Navbar from '~/components/layout/Navbar.vue'
 import { request } from '~/api/generate'
 import { vLoading } from '~/directives/loading'
+
 const activeTab = ref('image')
 const styles = ref([
   {
@@ -314,10 +315,8 @@ const generateArtwork = async () => {
 };
 
 //下载图片
-// 在setup()或<script setup>中添加：
 const downloadImage = () => {
   if (!aiResult.value) return;
-  // 如果是Blob URL（blob:http://...）
   if (aiResult.value.startsWith('blob:')) {
     const link = document.createElement('a')
     link.href = aiResult.value
