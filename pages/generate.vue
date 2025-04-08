@@ -186,7 +186,7 @@ const historyList = ref([
   },
   {
     imageUrl: '/images/examples/example7.png',
-    date: '2024-01-18 09:15'  
+    date: '2024-01-18 09:15'
   }
 ]);
 //上传手绘
