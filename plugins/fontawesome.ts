@@ -1,5 +1,5 @@
-import { library, config } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { library, config } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
   faCloudUploadAlt,
   faDownload,
@@ -14,7 +14,7 @@ import {
   faVideo,
   faGear,
   faWandMagicSparkles,
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
 // 防止Font Awesome图标的CSS被提前加载
 config.autoAddCss = false;
@@ -37,5 +37,5 @@ library.add(
 );
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.component("FontAwesomeIcon", FontAwesomeIcon);
+  nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon);
 });

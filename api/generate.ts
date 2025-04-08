@@ -1,9 +1,9 @@
 import axios from 'axios';
-import type { 
+import type {
   AxiosInstance,
   InternalAxiosRequestConfig,
   AxiosResponse,
-  AxiosError 
+  AxiosError,
 } from 'axios';
 // 创建并导出 instance（统一在开头导出）
 export const request: AxiosInstance = axios.create({
