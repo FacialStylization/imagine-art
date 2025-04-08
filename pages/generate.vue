@@ -38,10 +38,11 @@
         </div>
       </div>
       <div class="flex gap-6">
-        <div class="w-[330px]">
+        <!-- 左侧栏 -->
+        <div class="w-[330px] flex flex-col">
           <div class="content-area p-4 mb-4">
             <h2 class="text-xl font-bold mb-2">手绘创作</h2>
-            <div class="bg-gray-50 rounded-xl h-[300px] flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative " @click="triggerFileInput">
+            <div class="bg-gray-50 rounded-xl w-full aspect-square flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative" @click="triggerFileInput">
               <input
                   ref="fileInput"
                   type="file"
@@ -62,30 +63,10 @@
               >
             </div>
           </div>
-          <div class="content-area p-4 relative" >
-            <!-- 导航栏 -->
-            <div class="absolute left-[-130px] top-0 w-[120px] h-full  border-r border-gray-200 content-area">
-              <div class="p-2">
-                <h2 class="text-lg font-bold mb-2 mt-1 text-center">系统风格</h2>
-                <div class="space-y-3">
-                  <div 
-                    v-for="(style, index) in styles" :key="index"
-                    class="bg-gray-50 rounded-lg py-2  px-4 hover:bg-gray-100 transition-colors"
-                  >
-                  <img
-                    :src="style.url"
-                    :alt="style.alt"
-                    class="rounded-lg w-[80px] h-[80px] object-cover"
-                    style="cursor: pointer"
-                    @click="selectStyle(style)"
-                  >
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="content-area p-4 flex-1">
             <h2 class="text-xl font-bold mb-4">风格参考</h2>
             <div class="grid grid-cols-1 gap-4">
-              <div class="bg-gray-50 rounded-xl h-[300px] flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative"  @click="triggerStyleFileInput">
+              <div class="bg-gray-50 rounded-xl w-full aspect-square flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative"  @click="triggerStyleFileInput">
                   <input
                     ref="styleFileInput"
                     type="file"
@@ -105,20 +86,32 @@
                   @click.stop="triggerStyleFileInput"
                 >
               </div>
+              <h2 class="text-lg font-bold mb-2 mt-2 text-left">系统风格</h2>
+              <div class="flex flex-wrap gap-2">
+                <img
+                  v-for="(style, index) in styles" :key="index"
+                  :src="style.url"
+                  :alt="style.alt"
+                  class="rounded-lg w-[70px] h-[70px] object-cover hover:ring-2 hover:ring-blue-400 transition-all cursor-pointer"
+                  @click="selectStyle(style)"
+                >
+              </div>
             </div>
           </div>
         </div>
-        <div class="flex-1 content-area p-6">
+        
+        <!-- 中间AI创作结果区域 -->
+        <div class="flex-1 content-area p-6 flex flex-col">
           <h2 class="text-xl font-bold mb-4">AI 创作结果</h2>
-          <div class="bg-gray-50 rounded-xl h-[600px] flex items-center justify-center border-2 border-dashed border-gray-300 relative" v-loading="isLoading">
+          <div class="bg-gray-50 rounded-xl flex-1 flex items-center justify-center border-2 border-dashed border-gray-300 relative" v-loading="isLoading">
             <img
               v-if="aiResult"
               :src="aiResult"
               alt="AI创作结果"
-              class="max-h-full rounded-xl"
+              class="max-w-[95%] max-h-[95%] rounded-xl object-contain"
             >
             <div v-else class="text-center gentext">
-              <font-awesome-icon :icon="['fas', 'image']" class="text-6xl text-gray-400 mb- group-hover:text-primary transition-all mb-2" />
+              <font-awesome-icon :icon="['fas', 'image']" class="text-6xl text-gray-400 mb-2 group-hover:text-primary transition-all" />
                <p class="text-gray-400">生成的艺术作品将显示在这里</p>
             </div>
           </div>
@@ -127,16 +120,18 @@
               <font-awesome-icon :icon="['fas', 'download']" />
               <span>下载作品</span>
             </button>
-            <button  @click="generateArtwork" class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg !rounded-button whitespace-nowrap">
+            <button @click="generateArtwork" class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg !rounded-button whitespace-nowrap">
               <font-awesome-icon :icon="['fas', 'wand-magic-sparkles']" />
               <span>开始创作</span>
             </button>
           </div>
         </div>
-        <div class="w-[250px] max-h-[750px]">
-          <div class="content-area p-6">
+        
+        <!-- 右侧创作历史区域 -->
+        <div class="w-[250px]">
+          <div class="content-area p-6 flex flex-col h-full">
             <h2 class="text-xl font-bold mb-4">创作历史</h2>
-            <div class="space-y-4 overflow-y-auto max-h-[700px] scrollbar">
+            <div class="space-y-4 overflow-y-auto flex-1 scrollbar">
               <div v-for="(history, index) in historyList" :key="index" class="bg-gray-50 rounded-xl p-4">
                 <img
                   :src="history.imageUrl"
@@ -179,6 +174,10 @@ const aiResult = ref<string | null>(null)
 
 const historyList = ref([
   {
+    imageUrl: '/images/examples/example4.png',
+    date: '2024-01-21 14:00'
+  },
+  {
     imageUrl: '/images/examples/example5.png',
     date: '2024-01-20 10:30'
   },
@@ -188,7 +187,7 @@ const historyList = ref([
   },
   {
     imageUrl: '/images/examples/example7.png',
-    date: '2024-01-18 09:15'
+    date: '2024-01-18 09:15'  
   }
 ]);
 //上传手绘
@@ -361,5 +360,34 @@ button:not([style*="background-color"]):hover {
   width: 100%;
   height: 100%;
   background: #fff url('/images/loading.gif') no-repeat center;
+}
+
+/* 隐藏除创作历史外的滚动条 */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+/* 定制创作历史滚动条 */
+.scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 </style>
