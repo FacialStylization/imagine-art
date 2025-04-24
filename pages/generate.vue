@@ -9,12 +9,10 @@
           <div class="flex">
             <button
               class="px-10 py-2 rounded-full flex items-center gap-2 transition-all"
-              :style="
-                activeTab === 'image'
-                  ? 'background-color: #0ea5e9; color: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);'
-                  : 'color: #4b5563;'
-              "
-              @click="activeTab = 'image'"
+              :style="activeTab === 'image' ? 
+                'background-color: #0ea5e9; color: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);' : 
+                'color: #4b5563;'"
+              @click="activeTabIMG"
             >
               <font-awesome-icon :icon="['fas', 'image']" />
               <span>图像创作</span>
@@ -22,12 +20,10 @@
 
             <button
               class="px-10 py-2 rounded-full flex items-center gap-2 transition-all"
-              :style="
-                activeTab === 'video'
-                  ? 'background-color: #0ea5e9; color: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);'
-                  : 'color: #4b5563;'
-              "
-              @click="activeTab = 'video'"
+              :style="activeTab === 'video' ? 
+                'background-color: #0ea5e9; color: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);' : 
+                'color: #4b5563;'"
+              @click="activeTabVideo"
             >
               <font-awesome-icon :icon="['fas', 'video']" />
               <span>视频创作</span>
@@ -51,7 +47,7 @@
         </div>
       </div>
 
-      <div class="flex gap-6 items-stretch">
+      <div class="flex gap-6 items-stretch" v-if="activeTab === 'image'">
         <div class="w-[330px] flex flex-col">
           <div class="content-area p-4 mb-4">
             <h2 class="text-xl font-bold mb-2">手绘创作</h2>
@@ -122,9 +118,9 @@
                   @click.stop="triggerStyleFileInput"
                 />
               </div>
-
+              
               <h2 class="text-lg font-bold mt-2 text-left">系统风格</h2>
-              <div class="flex flex-wrap gap-2">
+              <div class="flex flex-wrap gap-10">
                 <img
                   v-for="(style, index) in styles"
                   :key="index"
@@ -149,7 +145,7 @@
               :src="aiResult"
               alt="AI创作结果"
               class="absolute w-full h-full rounded-xl object-cover"
-            />
+            >
             <div v-else class="text-center gentext">
               <font-awesome-icon
                 :icon="['fas', 'image']"
@@ -159,10 +155,93 @@
             </div>
           </div>
           <div class="mt-14 flex justify-end gap-4">
-            <button
-              class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-gray-200 transition-all shadow-sm hover:shadow !rounded-button whitespace-nowrap"
-              @click="downloadImage"
-            >
+            <button @click="downloadImage" class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-gray-200 transition-all shadow-sm hover:shadow !rounded-button whitespace-nowrap">
+              <font-awesome-icon :icon="['fas', 'download']" />
+              <span>下载作品</span>
+            </button>
+            <button @click="generateArtwork" class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg !rounded-button whitespace-nowrap">
+              <font-awesome-icon :icon="['fas', 'wand-magic-sparkles']" />
+              <span>开始创作</span>
+            </button>
+          </div>
+        </div>
+        
+        <div class="w-[250px] max-h-[902px]">
+          <div class="content-area p-6">
+            <h2 class="text-xl font-bold mb-4">创作历史</h2>
+            <div class="space-y-4 overflow-y-auto max-h-[810px] scrollbar min-h-[400px]">
+              <div v-for="(history, index) in historyList" :key="index" class="bg-gray-50 rounded-xl p-4">
+                <img
+                  :src="history?.imageUrl"
+                  :alt="`历史记录${index + 1}`"
+                  class="w-full h-[150px] object-cover rounded-lg mb-2"
+                >
+                <p class="text-sm text-gray-600">{{ history?.date }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-6 items-stretch" v-else>
+        <div class="w-[330px] flex flex-col">
+          <div class="content-area p-4 mb-4">
+            <h2 class="text-xl font-bold mb-2">视频参考图</h2>
+            <div class="bg-gray-50 rounded-xl w-full aspect-square flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative" @click="triggerVideoFileInput">
+              <input
+                  ref="videoFileInput"
+                  type="file"
+                  class="hidden"
+                  accept="image/*" 
+                  @change="handleVideoChange"
+                >
+              <div class="text-center" v-if="!videoPreviewUrl">
+                <font-awesome-icon :icon="['fas', 'cloud-arrow-up']" class="text-4xl text-gray-400 mb-4 group-hover:text-primary transition-all" />
+                <p class="text-gray-500 group-hover:text-primary transition-all">点击上传参考图片</p>
+                <p class="text-xs text-gray-400 mt-2">支持 JPG、PNG、SVG 格式</p>
+              </div>
+              <img 
+                v-if="videoPreviewUrl" 
+                :src="videoPreviewUrl" 
+                class="absolute inset-0 w-full h-full object-cover rounded-xl object-center"
+                @click.stop="triggerVideoFileInput"
+              >
+            </div>
+          </div>
+          <div class="max-h-[460px]">
+            <div class="content-area p-6">
+              <h2 class="text-xl font-bold mb-6">图像创作历史</h2>
+              <div class="space-y-4 overflow-y-auto max-h-[420px] min-h-[360px]">
+                <div v-for="(history, index) in historyList" :key="index" class="bg-gray-50 rounded-xl p-4">
+                  <img
+                    :src="history.imageUrl"
+                    :alt="`历史记录${index + 1}`"
+                    class="w-full h-[150px] object-cover rounded-lg mb-2"
+                  >
+                  <p class="text-sm text-gray-600">{{ history.date }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex-1 content-area p-6 flex flex-col">
+          <h2 class="text-xl font-bold mb-4">AI 创作结果</h2>
+          <div class="bg-gray-50 rounded-xl flex-1 flex items-center justify-center border-2 border-dashed border-gray-300 relative" v-loading="isLoading">
+            <video
+              v-if="aiVideo"
+              :src="aiVideo"
+              controls
+              autoplay
+              muted
+              class="absolute w-full h-full rounded-xl object-cover"
+            ></video>
+            <div v-else class="text-center gentext">
+              <font-awesome-icon :icon="['fas', 'film']" class="text-6xl text-gray-400 mb-2 group-hover:text-primary transition-all" />
+              <p class="text-gray-400">生成的视频作品将显示在这里</p>
+            </div>
+          </div>
+          <div class="mt-14 flex justify-end gap-4">
+            <button class="bg-gray-100 text-gray-600 px-8 py-3 rounded-xl flex items-center gap-2 hover:bg-gray-200 transition-all shadow-sm hover:shadow !rounded-button whitespace-nowrap">
               <font-awesome-icon :icon="['fas', 'download']" />
               <span>下载作品</span>
             </button>
@@ -175,22 +254,13 @@
             </button>
           </div>
         </div>
-
-        <div class="w-[250px]">
+        
+        <div class="w-[300px] max-h-[902px]">
           <div class="content-area p-6">
-            <h2 class="text-xl font-bold mb-4">创作历史</h2>
-            <div class="space-y-4 overflow-y-auto scrollbar">
-              <div
-                v-for="(history, index) in historyList"
-                :key="index"
-                class="bg-gray-50 rounded-xl p-4"
-              >
-                <img
-                  :src="history.imageUrl"
-                  :alt="`历史记录${index + 1}`"
-                  class="w-full h-[150px] object-cover rounded-lg mb-2"
-                />
-                <p class="text-sm text-gray-600">{{ history.date }}</p>
+            <h2 class="text-xl font-bold mb-4">视频创作历史</h2>
+            <div class="space-y-4 overflow-y-auto max-h-[810px] scrollbar min-h-[400px]">
+              <div v-for="(history, index) in historyList" :key="index" class="bg-gray-50 rounded-xl p-4">
+                <p class="text-sm text-gray-600"></p>
               </div>
             </div>
           </div>
@@ -201,48 +271,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import Navbar from '~/components/layout/Navbar.vue';
-import { request } from '~/api/generate';
-import { vLoading } from '~/directives/loading';
-
-const activeTab = ref('image');
+import { ref } from 'vue'
+import Navbar from '~/components/layout/Navbar.vue'
+import { request } from '~/api/generate'
+import { vLoading } from '~/directives/loading'
+import type { resolve } from 'path'
+const activeTab = ref('image')
 const styles = ref([
   {
-    url: '/images/style/impression_sunrise.jpg',
-    alt: '风格1',
+    url: '/images/examples/style1.jpg',
+    alt: '风格1'
   },
   {
-    url: '/images/style/starry_night.jpg',
-    alt: '风格2',
+    url: '/images/examples/style2.jpg',
+    alt: '风格2'
   },
   {
-    url: '/images/style/crayon2.jpg',
-    alt: '风格3',
-  },
+    url: '/images/examples/style3.jpg',
+    alt: '风格3'
+  }
 ]);
 
-const aiResult = ref<string | null>(null);
-
+// const historyList = ref([] as Array<{ imageUrl: string; date: string }>)
 const historyList = ref([
   {
-    imageUrl: '/images/results/starry_night_house.png',
-    date: '2024-01-21 14:00',
-  },
-  {
-    imageUrl: '/images/results/oil_painting_sea.png',
-    date: '2024-01-20 10:30',
-  },
-  {
-    imageUrl: '/images/results/impression_sunrise_house.png',
-    date: '2024-01-19 15:45',
-  },
-  {
-    imageUrl: '/images/results/crayon_sea.png',
-    date: '2024-01-18 09:15',
-  },
-]);
-// 上传手绘
+    imageUrl: '/images/examples/response4.png',
+    date: '2025-04-08 18:07',
+  }])
+//上传手绘
 const fileInput = ref<HTMLInputElement | null>(null);
 // 存储原始文件对象
 const previewFile = ref<File | null>(null);
@@ -324,62 +380,126 @@ const selectStyle = async (style: { url: string; alt: string }) => {
   }
 };
 
-// 生成艺术作品
-// 加载状态
-const isLoading = ref(false);
+//生成艺术作品
+//加载状态
+const isLoading = ref(false)
+const aiResult = ref<string | null>(null)
+const aiVideo = ref<string | null>(null)
 const generateArtwork = async () => {
-  if (!previewUrl.value || !stylePreviewUrl.value) {
-    alert('请先上传手绘作品和风格参考图片');
-    return;
-  }
-  if (isLoading.value) return;
-  try {
-    isLoading.value = true;
-    const formData = new FormData();
-    formData.append('content', previewFile.value!);
-    formData.append('style', stylePreviewFile.value!);
-    const response = await request.post(
-      'https://shirt-round-aluminium-cable.trycloudflare.com/api/ipadapter_scribble',
-      formData,
-      {
+  if (isLoading.value) return
+  //图片生成
+  if(activeTab.value === 'image'){
+    if (!previewUrl.value || !stylePreviewUrl.value) {
+      alert('请先上传手绘作品和风格参考图片');
+      return;
+    }
+    try {
+      aiResult.value = null
+      isLoading.value = true;
+      const formData = new FormData();
+      formData.append('content', previewFile.value!);
+      formData.append('style', stylePreviewFile.value!);
+      const response = await request.post('https://coupons-map-denied-rejected.trycloudflare.com/api/ipadapter_scribble', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        responseType: 'arraybuffer',
-      }
-    );
+        responseType: 'arraybuffer'
+      });
+      // 处理响应结果
+      const blob = new Blob([response.data], { type: 'image/png' });
+      const blobUrl = URL.createObjectURL(blob);
 
-    // 处理响应结果
-    const blob = new Blob([response.data], { type: 'image/png' });
-    const blobUrl = URL.createObjectURL(blob);
-
-    // 设置结果图片
-    aiResult.value = blobUrl;
-
-    // 添加到历史记录
-    historyList.value.unshift({
-      imageUrl: blobUrl,
-      date: new Date().toLocaleString('zh-CN'),
-    });
-  } catch (error) {
-    console.error('生成失败:', error);
-    alert('生成失败，请重试');
-  } finally {
-    isLoading.value = false;
+      
+      // 设置结果图片
+      aiResult.value = blobUrl;
+      
+      // 添加到历史记录
+      historyList.value.unshift({
+        imageUrl: blobUrl,
+        date: new Date().toLocaleString('zh-CN')
+      });
+    } catch (error) {
+      console.error('生成失败:', error)
+      alert('生成失败，请重试')
+    } finally{
+      isLoading.value = false
+    }
+  }
+  //图片生成
+  else{
+    if (!videoPreviewUrl.value) {
+      alert('请先上传参考图片');
+      return;
+    }
+    try {
+      isLoading.value = true;
+      const formData = new FormData();
+      formData.append('image', videoPreviewUrl.value!);
+      // const response = await request.post('https://shirt-round-aluminium-cable.trycloudflare.com/api/ipadapter_scribble', formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      // })
+      // console.log(response)
+      await new Promise<void>(resolve => { setTimeout(() => resolve(), 5000) });
+    } catch (error) {
+      console.error('生成失败:', error)
+      alert('生成失败，请重试')
+    } finally{
+      isLoading.value = false
+    }
   }
 };
 
-// 下载图片
+//下载图片
+// 在setup()或<script setup>中添加：
 const downloadImage = () => {
   if (!aiResult.value) return;
+  // 如果是Blob URL（blob:http://...）
   if (aiResult.value.startsWith('blob:')) {
-    const link = document.createElement('a');
-    link.href = aiResult.value;
-    link.download = `智绘创艺.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const link = document.createElement('a')
+    link.href = aiResult.value
+    link.download = `智绘创艺.png`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    return
   }
+}
+const activeTabIMG = () => {
+  videoPreviewFile.value = null
+  videoPreviewUrl.value = null
+  activeTab.value='image'
+}
+const activeTabVideo = () =>{
+  previewUrl.value = null
+  previewFile.value = null
+  stylePreviewFile.value = null
+  stylePreviewUrl.value = null
+  activeTab.value='video'
+}
+//生成视频图片上传
+const videoFileInput = ref<HTMLInputElement | null>(null);
+const videoPreviewFile = ref<File | null>(null);
+const videoPreviewUrl = ref<string | null>(null);
+  const triggerVideoFileInput = () => {
+    videoFileInput.value?.click();
+};
+const handleVideoChange = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (file) {
+    if (!file.type.startsWith('image/')) {
+      alert('请选择图片文件');
+      return;
+    }
+    videoPreviewFile.value = file;
+    videoPreviewUrl.value = URL.createObjectURL(file);
+    // 这里可以添加实际上传逻辑
+  }
+  
+  target.value = '';
 };
 </script>
 
