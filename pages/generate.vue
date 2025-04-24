@@ -209,15 +209,15 @@ import { vLoading } from '~/directives/loading';
 const activeTab = ref('image');
 const styles = ref([
   {
-    url: '/images/examples/example1.png',
+    url: '/images/style/impression_sunrise.jpg',
     alt: '风格1',
   },
   {
-    url: '/images/examples/example2.png',
+    url: '/images/style/starry_night.jpg',
     alt: '风格2',
   },
   {
-    url: '/images/examples/example3.png',
+    url: '/images/style/crayon2.jpg',
     alt: '风格3',
   },
 ]);
@@ -226,19 +226,19 @@ const aiResult = ref<string | null>(null);
 
 const historyList = ref([
   {
-    imageUrl: '/images/examples/example4.png',
+    imageUrl: '/images/results/starry_night_house.png',
     date: '2024-01-21 14:00',
   },
   {
-    imageUrl: '/images/examples/example5.png',
+    imageUrl: '/images/results/oil_painting_sea.png',
     date: '2024-01-20 10:30',
   },
   {
-    imageUrl: '/images/examples/example6.png',
+    imageUrl: '/images/results/impression_sunrise_house.png',
     date: '2024-01-19 15:45',
   },
   {
-    imageUrl: '/images/examples/example7.png',
+    imageUrl: '/images/results/crayon_sea.png',
     date: '2024-01-18 09:15',
   },
 ]);
