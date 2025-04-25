@@ -3,19 +3,20 @@
     class="min-h-[1024px] bg-gradient-to-b from-[#E6F7F5] to-white font-['Microsoft YaHei']"
   >
     <section
-      class="pt-36 min-h-[600px] flex items-center relative bg-cover bg-center banner"
+      class="pt-6 min-h-[600px] flex items-center relative bg-cover bg-center banner"
     >
       <div class="max-w-[1440px] mx-auto px-8 py-16 relative z-10">
-        <div class="max-w-lg">
-          <h1 class="text-5xl font-bold text-gray-800 mb-6">AI 智能创作平台</h1>
-          <p class="text-xl text-gray-600 mb-8">
+        <div class="">
+          <h1 class="text-5xl font-bold text-gray-800 mb-6">智绘创艺</h1>
+          <p class="text-xl text-gray-600 mb-8" style="color:rgb(31, 41, 55)">
             使用先进的 AI
-            技术，轻松创作独特的插画作品。无需专业技能，让创意自由绽放。
+            技术，轻松创作独特的插画作品，让创意自由绽放。
           </p>
           <NuxtLink
             to="/generate"
             class="inline-flex items-center px-8 py-3 bg-primary text-gray-800 font-medium rounded-xl hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg border-2 border-blue-200"
-          >
+            :style="{fontSize:'20px'}"
+            >
             开始创作
             <font-awesome-icon :icon="['fas', 'arrow-right']" class="ml-2" />
           </NuxtLink>
@@ -59,7 +60,7 @@
   height: 100%;
   background-image:
     linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1)),
-    url('/images/teaser.png');
+    url('@/public/images/background.jpg');
   background-size: cover;
   background-position: center;
 }

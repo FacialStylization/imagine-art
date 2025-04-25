@@ -87,7 +87,7 @@
 
           <div class="content-area p-4 flex-1">
             <h2 class="text-xl font-bold mb-4">风格参考</h2>
-            <div class="grid grid-cols-1 gap-4">
+            <div class="grid grid-cols-1 gap-2">
               <div
                 class="bg-gray-50 rounded-xl w-full aspect-square flex items-center justify-center border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-all group relative"
                 @click="triggerStyleFileInput"
@@ -120,15 +120,16 @@
               </div>
               
               <h2 class="text-lg font-bold mt-2 text-left">系统风格</h2>
-              <div class="flex flex-wrap gap-10">
-                <img
-                  v-for="(style, index) in styles"
-                  :key="index"
+              <div class="flex flex-wrap" style="justify-content:space-between">
+                <div v-for="(style, index) in styles" :key="index">                
+                  <img
                   :src="style.url"
                   :alt="style.alt"
                   class="rounded-lg w-[70px] h-[70px] object-cover hover:ring-2 hover:ring-blue-400 transition-all cursor-pointer"
-                  @click="selectStyle(style)"
-                />
+                  @click="selectStyle(style,index)"
+                  />
+                  <p style="text-align:center;line-height:15px;margin-top:8px;color:rgb(75, 85, 141)">{{style.alt}}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -166,10 +167,10 @@
           </div>
         </div>
         
-        <div class="w-[250px] max-h-[902px]">
+        <div class="w-[250px] max-h-[900px]">
           <div class="content-area p-6">
             <h2 class="text-xl font-bold mb-4">创作历史</h2>
-            <div class="space-y-4 overflow-y-auto max-h-[810px] scrollbar min-h-[400px]">
+            <div class="space-y-4 overflow-y-auto max-h-[410px] scrollbar min-h-[400px]">
               <div v-for="(history, index) in historyList" :key="index" class="bg-gray-50 rounded-xl p-4">
                 <img
                   :src="history?.imageUrl"
@@ -180,8 +181,17 @@
               </div>
             </div>
           </div>
+          <div class="content-area p-6 transition-all duration-1000 ease-in-out overflow-hidden"  style="margin-top:20px" :class="{
+            'opacity-0 max-h-0': !selectId,
+            'opacity-100 max-h-[500px]': selectId}">
+            <h2 class="text-xl font-bold mb-4 text-center">艺术学习</h2>
+            <div class="space-y-4 overflow-y-auto h-[300px] scrollbar">
+              <p style="text-indent:2em">{{styles[selectId]?.description}}</p>
+            </div>
+          </div>
         </div>
       </div>
+      <!-- 视频界面 -->
       <div class="flex gap-6 items-stretch" v-else>
         <div class="w-[330px] flex flex-col">
           <div class="content-area p-4 mb-4">
@@ -280,15 +290,18 @@ const activeTab = ref('image')
 const styles = ref([
   {
     url: '/images/examples/style1.jpg',
-    alt: '风格1'
+    alt: '印象派',
+    description:'《星空月夜》是荷兰后印象派画家文森特·梵高于1889年创作的一幅著名油画。画面中，巨大的柏树像火焰一样向上伸展，星月璀璨的夜空以漩涡状的笔触描绘，给人以无限遐想的空间。梵高通过此作品表达了他对自然美景的独特感受以及内心的激情与孤独。'
   },
   {
     url: '/images/examples/style2.jpg',
-    alt: '风格2'
+    alt: '浪漫派',
+    description:'这张图片展示了一幅充满浪漫主义色彩的艺术作品，画面中以柔和的色调描绘了天空与草地的景象前景中的黄色花朵和绿色草丛则为画面增添了生机与活力，象征着自然界的美好与希望。浪漫主义艺术家们常常通过这样的作品来唤起观者内心深处的情感共鸣，鼓励人们去感受生活中的诗意与美好'
   },
   {
     url: '/images/examples/style3.jpg',
-    alt: '风格3'
+    alt: '卡通风',
+    description:'画面中是一只可爱的猴子，它正用尾巴挂在树上，脸上带着开心的笑容。背景是简单的绿色和蓝色渐变，给人一种轻松愉快的感觉。这幅插画被标记为“卡通风”，通常这种风格的作品以夸张、简洁和富有表现力的形象来传达信息或讲述故事，激发大家的想象力和创造力'
   }
 ]);
 
@@ -314,7 +327,6 @@ const triggerFileInput = () => {
 const handleFileChange = (e: Event) => {
   const target = e.target as HTMLInputElement;
   const file = target.files?.[0];
-
   if (file) {
     // 验证是否为图片
     if (!file.type.startsWith('image/')) {
@@ -352,6 +364,7 @@ const handleStyleFileChange = (e: Event) => {
       alert('请选择图片文件');
       return;
     }
+    selectId.value = null
     stylePreviewFile.value = file;
     stylePreviewUrl.value = URL.createObjectURL(file);
     // 这里可以添加实际上传逻辑
@@ -361,12 +374,13 @@ const handleStyleFileChange = (e: Event) => {
 };
 
 // 系统风格图片
-const selectStyle = async (style: { url: string; alt: string }) => {
+const selectId = ref<string | null>(null)
+const selectStyle = async (style: { url: string; alt: string },index:number) => {
   try {
     // 获取图片数据
     const response = await fetch(style.url);
     const blob = await response.blob();
-
+    selectId.value = String(index)
     // 创建真实 File 对象
     stylePreviewFile.value = new File([blob], style.alt, {
       type: blob.type || 'image/*',
