@@ -181,13 +181,13 @@
               </div>
             </div>
           </div>
-          <div class="content-area p-6 transition-all duration-1000 ease-in-out overflow-hidden"  style="margin-top:20px" :class="{
+          <div class="content-area p-6 transition-all duration-1000 ease-in-out overflow-hidden"  style="margin-top:20px;" :class="{
             'opacity-0 max-h-0': !selectId,
             'opacity-100 max-h-[500px]': selectId}">
-            <h2 class="text-xl font-bold mb-4 text-center">艺术学习</h2>
+            <h2 class="text-xl font-bold mb-2 text-center">艺术学习</h2>
             <div class="space-y-4 overflow-y-auto h-[300px] scrollbar">
-              <p style="text-indent:2em">{{styles[selectId]?.description}}</p>
-            </div>
+              <p style="text-indent:2em;background-color:rgb(243, 244, 246);border-radius:10px" >{{styles[selectId]?.description}}</p>
+            </div> 
           </div>
         </div>
       </div>

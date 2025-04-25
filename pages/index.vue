@@ -27,15 +27,33 @@
     <section class="py-16">
       <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-2xl font-bold text-gray-800 mb-8">精选案例</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl hover:-translate-y-1">
-            <img src="/images/examples/response1.png" alt="案例1" class="w-full h-[300px] object-cover">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" >
+          <div class="rounded-lg overflow-hidden transition-all curb">
+            <div class="w-full h-[300px] card-inner">
+              <img src="@/public/images/examples/response1.png" alt="案例1" class="w-full h-[300px] object-cover imgrotate card-face">
+              <div class="w-full h-[300px] textrotate card-face">
+                <p>我是标题</p>
+                <span>我是内容</span> 
+              </div>
+            </div>
           </div>
-          <div class="rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl hover:-translate-y-1">
-            <img src="/images/examples/response2.png" alt="案例2" class="w-full h-[300px] object-cover">
+          <div class="rounded-lg overflow-hidden transition-all curb">
+            <div class="w-full h-[300px] card-inner">
+              <img src="@/public/images/examples/response2.png" alt="案例2" class="w-full h-[300px] object-cover imgrotate card-face">
+              <div class="w-full h-[300px] textrotate card-face">
+                <p>我是标题</p>
+                <span>我是内容</span> 
+              </div>
+            </div>
           </div>
-          <div class="rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl hover:-translate-y-1">
-            <img src="/images/examples/response3.png" alt="案例3" class="w-full h-[300px] object-cover">
+          <div class="rounded-lg overflow-hidden transition-all curb">
+            <div class="w-full h-[300px] card-inner">
+              <img src="@/public/images/examples/response3.png" alt="案例3" class="w-full h-[300px] object-cover imgrotate card-face">
+              <div class="w-full h-[300px] textrotate card-face">
+                <p>我是标题</p>
+                <span>我是内容</span> 
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -64,4 +82,52 @@
   background-size: cover;
   background-position: center;
 }
+.curb {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.curb:hover .card-inner {
+  transform: rotateY(180deg);
+}
+
+.imgrotate {
+  transform: rotateY(0deg);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  top: 0;
+  left: 0;
+}
+
+.textrotate {
+  transform: rotateY(180deg);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  top: 0;
+  left: 0;
+  background-color:rgb(243, 244, 246);
+  padding:15px 20px;
+}
+.textrotate p{
+  text-align:center;
+}
+.textrotate span{
+  display:block;
+  text-indent:2em;
+}
+
 </style>
